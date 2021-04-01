@@ -1,0 +1,233 @@
+---
+title: "Regression"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+<style>
+
+.tt {
+  font-family:'Lucida Console', monospace; 
+  text-align:center
+}
+
+h2 {
+  color: darkgreen;
+  font-weight: bold
+}
+
+h3 {
+  color: darkolivegreen;
+}
+
+.topicsContainer {
+  background-color: #f2f7f6;
+
+}
+
+.topic.current {
+  background-color: #e6fcf8;
+  border-color: #41ab98;
+  border: solid 1px;
+  font-weight: bold
+}
+
+.band {
+  padding-left: 0%
+}
+
+.topicsFooter .resetButton {
+  font-size: 80%;
+}
+
+.btn-primary, .btn-success, .btn-info {
+    background-color: darkgreen;
+    background-image: none;
+    border: none;
+}
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary:focus:active, .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success:focus:active, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info:focus:active {
+    background-color: darkolivegreen; }
+  .btn-primary:focus:hover, .btn-primary:active:hover, .btn-primary:focus:active:hover, .btn-success:focus:hover, .btn-success:active:hover, .btn-success:focus:active:hover, .btn-info:focus:hover, .btn-info:active:hover, .btn-info:focus:active:hover {
+    background-color: darkolivegreen; }
+  .btn-primary.disabled, .btn-primary:disabled, .btn-primary.disabled:hover, .btn-primary:disabled:hover, .btn-success.disabled, .btn-success:disabled, .btn-success.disabled:hover, .btn-success:disabled:hover, .btn-info.disabled, .btn-info:disabled, .btn-info.disabled:hover, .btn-info:disabled:hover {
+    background-color: darkolivegreen; }
+
+
+</style>
+
+## Regression Review
+
+### Linear Relationships
+
+When we say two quantitative variables have a linear relationship, we generally don't mean that every pair of points falls exactly on a line. This is true for variables such as time elapsed and time remaining which are said to have a deterministic relationship. Most variables do not have a deterministic relationship and are influenced by many different factors. For e.g., everyone who is 165 cm tall will not have the same wrist circumference. When we say those variables have a random relationship, what we mean is that if we look at the average of all possible y-values at each particular x in the population, those averages would form a line.
+
+```{r, message = FALSE}
+library(tidyverse)
+library(ggtext)
+set.seed(183)
+x.rand <- rep(1:7, each = 50)
+y.rand <- 4*x.rand + 2 + rnorm(50*7, 0, 2)
+x.mean <- c(1:7)
+y.mean <- 4*x.mean + 2
+dat <- data.frame(x.rand, y.rand, x.mean, y.mean )
+
+ggplot(dat) +
+  geom_point(aes(x=x.rand, y=y.rand)) +
+  geom_line(aes(x=x.mean, y=y.mean, col = "red")) +
+  geom_point(aes(x=x.mean, y=y.mean, col = "red")) +
+  xlab("x variable") +
+  ylab("y variable") +
+  ggtitle("An x and y variable with an underlying linear relationship") +
+  theme_light() +
+  theme(legend.position = "none") 
+  
+```
+
+Here the red dots represent the average y-value of all the points stacked vertically at each x-value. We do not literally expect every point to fall on this straight line. It's a statement about the average behaviour. 
+
+We also won't have all possible (x,y) pairs that ever were or ever will be to make up this population. In practice, we have a small number of points and commonly will not have multiple y-values for each x-value we observe. This means that when we have sample data, we aren't finding these average red dots. What we are doing is observing that the points we have generally fall in the pattern of a line and we do our best to fit the best line through them. 
+
+This "best fitting line" is defined as the line that minimizes the square of the vertical distances between all of the points and the fitted line. We can see a representation of this below:
+
+
+```{r}
+set.seed(435)
+x <- runif(15, 0, 10)
+set.seed(72)
+y <- 4*x + 3 + rnorm(15, 0, 6)
+dat <- data.frame(x, y)
+proj.lm <- lm(y ~ x, data = dat)
+a1 <- proj.lm$coefficients[1] # intercept
+b1 <- proj.lm$coefficients[2] # slope
+ggplot(dat, aes (x = x, y = y)) +
+  geom_point() +
+  geom_abline(intercept = a1, slope = b1,
+              col = "darkgreen", lwd = 1) +
+  geom_segment(aes(xend = x, yend = proj.lm$fitted),
+               colour = "red", arrow = arrow(length = unit(0.15, "cm"))) +
+  xlab("x variable") +
+  ylab("y variable") +
+  ggtitle("Vertical distances between points and the regression line") +
+  theme_light() +
+  theme(legend.position = "none") 
+```
+
+This vertical difference represents the difference in y-value we observe and the y-value our linear model (best guess at the true relationship). In statistics, we refer to this as our error. It makes sense that we would like this to be as small as possible.
+
+## Scatterplots
+
+### Visualizing the Data
+
+When we would like to fit a model to our data, our first step is generally to do some exploratory data analysis and try our best to visualize the data if possible to take an educated guess at the correct model to fit. When we have only two variables, as is the case in simple linear regression, we can visualize the data set with a **scatterplot**. Both graphs from the previous section were scatterplots. 
+
+A scatterplot will put a dot at the appropriate co-ordinate for each (x,y) pair. From there we can see if the points tend to fall along a line or if there may be some other type of pattern (such as a parabola or a logarithmic relationship).
+
+In R we can make a simple scatterplot using the 
+
+<p class = "tt"> plot(x, y)</p>
+
+function where we replace <span class="tt">x</span> and <span class="tt">y</span> with our vectors for the x and y variables respectively. Remember that if our data is contained in a dataframe we will need to use the \$ to specify where our variable vectors are located such as 
+
+<p class = "tt"> plot(dataframeName\$x, dataframeName\$y)</p>
+
+In the package ggplot, there is a dataset containing the **height** and **mass** of various Star Wars characters. I have selected the first 8 observations and stored the data in dataframe called <span class="tt">characters</span>.
+
+```{r starwars-setup}
+characters <- starwars %>%
+  select(name, height, mass) %>%
+  slice(1:8)
+```
+
+Here is a printout of the dataframe
+
+```{r, exercise.setup = "starwars-setup", echo = TRUE}
+print(characters)
+```
+
+To make a scatterplot of the dataset I would go
+
+```{r starwars, echo = TRUE}
+plot(characters$height, characters$mass)
+```
+
+One of the first things you may notice is that the labels are not great and there is no title on the plot. Because we had to specify the dataframe name, that also appears in the axis labels. There are many ways we can tailor our plot but one common fix you will need to make is to add labels by putting some optional commands into the <span class="tt">plot(x,y)</span> function as follows:
+
+<p class="tt">plot(x, y, main = "Plot title here", xlab = "X-axis label here", ylab = "Y-axis label here")</p>
+
+For our starwars plot we can add plot labels like this:
+
+```{r starwars-labels, exercise.setup = "starwars-setup", echo = TRUE}
+plot(characters$height, characters$mass, 
+     main = "Mass vs Height of Various Star Wars Characters",
+     xlab = "Height (in cm)",
+     ylab = "Mass (in kg)")
+```
+
+### Excercises (Scatterplots)
+
+In R there is a built-in dataset contained in a dataframe called <span class="tt">mtcars</span>. Here is a print out of the first 6 rows of the dataframe using the <span class="tt">head()</span> function:
+```{r, echo = TRUE}
+head(mtcars)
+```
+
+Make a scatterplot where you use the gas mileage (**mpg**) as <span class="tt">y</span> and the weight (**wt**) as your <span class="tt">x</span>. Add labels and a title to the plot. Note that the mileage is recorded in miles per gallon and the weight is reported in kilograms.
+
+```{r car-base, exercise = TRUE, exercise.lines = 6}
+
+```
+
+```{r car-base-solution}
+plot(mtcars$wt, mtcars$mpg,
+     main = "Mileage vs Weight of Various Cars",
+     xlab = "Weight (in kg)",
+     ylab = "Gas Mileage (in mpg)"
+     )
+```
+
+### ggplot
+
+Another thing you may have noticed is that the scatterplots we made look aesthetically different from the plots in the regression review. Those plots were made using **ggplot** as part of **tidyverse** package. This is an alternative to using base R to make plots that many find easier to make fine tuned customizations or alter the appearance. The choice is yours which one you decide to use. 
+
+To make plots using ggplot, we first need to make sure our data is in a dataframe. Next we make a ggplot object where we specify our data frame and the variables we are using and then we add on "layers" that add plots and features to our graph. To make a simple scatterplot we would first make the ggplot object as
+
+<p span = "tt">ggplot(dataframe, aes(x = x, y = y)) </p>
+
+and then add (using a + symbol) a layer of points using the function 
+
+<p span = "tt">geom_point() </p>
+
+
+## Fitting the Line
+
+### The lm() function
+
+### Exercises
+
+## Extracting Information
+
+### summary() function
+
+### Fitted Values
+
+### Residuals
+
+### Exercises
+
+## Model Assumptions
+
+### Residual Plots
+
+### Exercises
+
+### Normal Quantile Plots
+
+### Exercises
+
+### Histograms 
+
+### Exercises
+
