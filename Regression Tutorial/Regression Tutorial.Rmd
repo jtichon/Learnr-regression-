@@ -195,7 +195,7 @@ plot(mtcars$wt, mtcars$mpg,
 
 ### ggplot
 
-Another thing you may have noticed is that the scatterplots we made look aesthetically different from the plots in the regression review. Those plots were made using **ggplot** as part of **tidyverse** package. This is an alternative to using base R to make plots that many find easier to make fine tuned customizations or alter the appearance. The choice is yours which one you decide to use. 
+Another thing you may have noticed is that the scatterplots we made look aesthetically different from the plots in the regression review. Those plots were made using **ggplot** which is part of **tidyverse** package. This is an alternative to using base R to make plots that many find easier to make fine tuned customizations or alter the appearance. The choice is yours which one you decide to use. 
 
 To make plots using ggplot, we first need to make sure our data is in a dataframe. Next we make a ggplot object where we specify our data frame and the variables we are using and then we add on "layers" that add plots and features to our graph. To make a simple scatterplot we would first make the ggplot object as
 
@@ -234,9 +234,10 @@ Re-make your scatterplot from the previous exercise using the <span class = "tt"
 
 ```{r car-ggplot-solution}
 ggplot(mtcars, aes(x=wt, y=mpg)) +
+  geom_point() +
   xlab("Weight (in kg)") +
   ylab("Gas Mileage (in mpg)") +
-  ggtitle("Mileage vs Weight of Various Cars")
+  ggtitle("Mileage vs Weight of Various Cars") 
 ```
 
 
@@ -295,7 +296,7 @@ ggplot(dat, aes (x = x, y = y)) +
 
 ### The lm() function
 
-In R we can find these coefficient using the <span class = "tt">lm()/span> function. This will fit the least-squares regression line and display the coefficients. How you use the function depends on if your data is in a dataframe or saved as two vectors. 
+In R we can find these coefficient using the <span class = "tt">lm()</span> function. This will fit the least-squares regression line and display the coefficients. How you use the function depends on if your data is in a dataframe or saved as two vectors. 
 
 In the case of a dataframe, you would use:
 
@@ -353,7 +354,7 @@ plot(mtcars$wt, mtcars$mpg,
      )
 ```
 
-This seems like the relationship may be linear so we can fit a least-squares regression line using our span class = "tt">lm()</span> function as follows:
+This seems like the relationship may be linear so we can fit a least-squares regression line using our <span class = "tt">lm()</span> function as follows:
 
 ```{r, echo = TRUE}
 lm(mpg ~ wt, data = mtcars)
@@ -376,7 +377,7 @@ abline(lm(mpg ~ wt, data = mtcars))
 
 ### Exercises
 
-(1) In the exercise box below, I have created two vectors of data: <span class = "tt">temperature<span> and <span class = "tt">sales</span>. These vectors track the outdoor daytime high temperature (in degrees celcius) and number of ice creams sold respectively in a series of 10 business days. Create a scatterplot of the data to verify the relationship appears linear and then find the least squares regression line using the <span class = "tt">lm()</span> function.
+(1) In the exercise box below, I have created two vectors of data: <span class = "tt">temperature</span> and <span class = "tt">sales</span>. These vectors track the outdoor daytime high temperature (in degrees celcius) and number of ice creams sold respectively in a series of 10 business days. Create a scatterplot of the data to verify the relationship appears linear and then find the least squares regression line using the <span class = "tt">lm()</span> function.
 
 ```{r icecream-setup}
 temperature <- c(15, 21, 19, 26, 24, 22, 30, 33, 22, 18)
@@ -546,7 +547,7 @@ harris.fitted <- fitted.values(harris.lm)
 
 To see the residuals (i.e the error/(observed - expected)/$y-\hat{y}$), we can apply the 
 
-<p span = "tt"> resid()<p>
+<p span = "tt"> residuals()<p>
 
 function to our object containing the linear model. 
 
@@ -686,7 +687,7 @@ fitted.values(Loblolly.lm)
 ```
 
 ```{r Loblolly-residuals-solution}
-residuals(Loblolly.lm[c(4, 23)])
+residuals(Loblolly.lm)[c(4, 23)]
 ```
 
 - The first 10 standardized residuals.
@@ -696,7 +697,7 @@ residuals(Loblolly.lm[c(4, 23)])
 ```
 
 ```{r Loblolly-standard-solution}
-rstandard(Loblolly.lm[1:10])
+rstandard(Loblolly.lm)[1:10]
 ```
 
 ## Model Assumptions
@@ -764,7 +765,7 @@ plot(housing.fitted, housing.resid, xlab = "Fitted Values", ylab = "Residuals")
 
 ### Normal Quantile Plots
 
-To assess the condition of normal error terms we can create a **normal quantile plot** (also known as a **qq-plot*).
+To assess the condition of normal error terms we can create a **normal quantile plot** (also known as a **qq-plot**).
 
 These plots a pre-programmed into R. If our dataset is saved to an object, such as <span class = "tt">data.lm</span>, we can create a normal quantile plot by first creating a vector of standardized residuals and then using the <span class = "tt"> qqnorm()</span> and <span class = "tt">qqline()</span> functions on the standardized residuals as follows:
 

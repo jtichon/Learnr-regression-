@@ -249,7 +249,7 @@ plot(x, y, main = “Plot title here”, xlab = “X-axis label here”, ylab = 
 </div>
 <div id="section-ggplot" class="section level3">
 <h3>ggplot</h3>
-<p>Another thing you may have noticed is that the scatterplots we made look aesthetically different from the plots in the regression review. Those plots were made using <strong>ggplot</strong> as part of <strong>tidyverse</strong> package. This is an alternative to using base R to make plots that many find easier to make fine tuned customizations or alter the appearance. The choice is yours which one you decide to use.</p>
+<p>Another thing you may have noticed is that the scatterplots we made look aesthetically different from the plots in the regression review. Those plots were made using <strong>ggplot</strong> which is part of <strong>tidyverse</strong> package. This is an alternative to using base R to make plots that many find easier to make fine tuned customizations or alter the appearance. The choice is yours which one you decide to use.</p>
 <p>To make plots using ggplot, we first need to make sure our data is in a dataframe. Next we make a ggplot object where we specify our data frame and the variables we are using and then we add on “layers” that add plots and features to our graph. To make a simple scatterplot we would first make the ggplot object as</p>
 <p class="tt">
 ggplot(dataframe, aes(x = x, y = y))
@@ -279,9 +279,10 @@ geom_point()
 </div>
 <div class="tutorial-exercise-support" data-label="car-ggplot-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>ggplot(mtcars, aes(x=wt, y=mpg)) +
+  geom_point() +
   xlab(&quot;Weight (in kg)&quot;) +
   ylab(&quot;Gas Mileage (in mpg)&quot;) +
-  ggtitle(&quot;Mileage vs Weight of Various Cars&quot;)</code></pre>
+  ggtitle(&quot;Mileage vs Weight of Various Cars&quot;) </code></pre>
 </div>
 </div>
 </div>
@@ -296,7 +297,7 @@ geom_point()
 <p><img src="Regression-Tutorial_files/figure-html/unnamed-chunk-7-1.png" width="624" /></p>
 <div id="section-the-lm-function" class="section level3">
 <h3>The lm() function</h3>
-<p>In R we can find these coefficient using the <span class = "tt">lm()/span&gt; function. This will fit the least-squares regression line and display the coefficients. How you use the function depends on if your data is in a dataframe or saved as two vectors.</p>
+<p>In R we can find these coefficient using the <span class="tt">lm()</span> function. This will fit the least-squares regression line and display the coefficients. How you use the function depends on if your data is in a dataframe or saved as two vectors.</p>
 <p>In the case of a dataframe, you would use:</p>
 <p class="tt">
 lm(y ~ x, data = dataframeName)
@@ -341,7 +342,7 @@ abline(lm(cost ~ pages))</code></pre>
      ylab = &quot;Gas Mileage (in mpg)&quot;
      )</code></pre>
 <p><img src="Regression-Tutorial_files/figure-html/unnamed-chunk-9-1.png" width="624" /></p>
-<p>This seems like the relationship may be linear so we can fit a least-squares regression line using our span class = “tt”&gt;lm()</span> function as follows:</p>
+<p>This seems like the relationship may be linear so we can fit a least-squares regression line using our <span class="tt">lm()</span> function as follows:</p>
 <pre class="r"><code>lm(mpg ~ wt, data = mtcars)</code></pre>
 <pre><code>## 
 ## Call:
@@ -364,7 +365,7 @@ abline(lm(mpg ~ wt, data = mtcars))</code></pre>
 <div id="section-exercises" class="section level3">
 <h3>Exercises</h3>
 <ol style="list-style-type: decimal">
-<li>In the exercise box below, I have created two vectors of data: <span class = "tt">temperature<span> and <span class="tt">sales</span>. These vectors track the outdoor daytime high temperature (in degrees celcius) and number of ice creams sold respectively in a series of 10 business days. Create a scatterplot of the data to verify the relationship appears linear and then find the least squares regression line using the <span class="tt">lm()</span> function.</li>
+<li>In the exercise box below, I have created two vectors of data: <span class="tt">temperature</span> and <span class="tt">sales</span>. These vectors track the outdoor daytime high temperature (in degrees celcius) and number of ice creams sold respectively in a series of 10 business days. Create a scatterplot of the data to verify the relationship appears linear and then find the least squares regression line using the <span class="tt">lm()</span> function.</li>
 </ol>
 <div class="tutorial-exercise-support" data-label="icecream-setup" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>temperature &lt;- c(15, 21, 19, 26, 24, 22, 30, 33, 22, 18)
@@ -516,7 +517,7 @@ fitted.values()
 <h3>Residuals</h3>
 <p>To see the residuals (i.e the error/(observed - expected)/<span class="math inline">\(y-\hat{y}\)</span>), we can apply the</p>
 <p span = "tt">
-resid()
+residuals()
 <p>
 <p>function to our object containing the linear model.</p>
 <pre class="r"><code>residuals(harris.lm)</code></pre>
@@ -642,7 +643,7 @@ rstandard()
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"Loblolly-setup","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="Loblolly-residuals-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>residuals(Loblolly.lm[c(4, 23)])</code></pre>
+<pre class="text"><code>residuals(Loblolly.lm)[c(4, 23)]</code></pre>
 </div>
 <ul>
 <li>The first 10 standardized residuals.</li>
@@ -651,7 +652,7 @@ rstandard()
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"Loblolly-setup","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="Loblolly-standard-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code>rstandard(Loblolly.lm[1:10])</code></pre>
+<pre class="text"><code>rstandard(Loblolly.lm)[1:10]</code></pre>
 </div>
 </div>
 </div>
@@ -706,7 +707,7 @@ plot(housing.fitted, housing.resid, xlab = &quot;Fitted Values&quot;, ylab = &qu
 </div>
 <div id="section-normal-quantile-plots" class="section level3">
 <h3>Normal Quantile Plots</h3>
-<p>To assess the condition of normal error terms we can create a <strong>normal quantile plot</strong> (also known as a **qq-plot*).</p>
+<p>To assess the condition of normal error terms we can create a <strong>normal quantile plot</strong> (also known as a <strong>qq-plot</strong>).</p>
 <p>These plots a pre-programmed into R. If our dataset is saved to an object, such as <span class="tt">data.lm</span>, we can create a normal quantile plot by first creating a vector of standardized residuals and then using the <span class="tt"> qqnorm()</span> and <span class="tt">qqline()</span> functions on the standardized residuals as follows:</p>
 <pre><code>data.stdres &lt;- rstandard(data.lm)
 qqnorm(data.stdres)
@@ -756,6 +757,7 @@ hist()
 <p>In the <span class="tt">harris</span> dataset this would look like:</p>
 <pre class="r"><code>hist(harris.resid)</code></pre>
 <p><img src="Regression-Tutorial_files/figure-html/unnamed-chunk-33-1.png" width="624" /></p>
+<p>Again we notice the one outlying point that is preventing the plot from looking bell-shaped indicating that same outlier as before.</p>
 </div>
 <div id="section-exercises-4" class="section level3">
 <h3>Exercises</h3>
